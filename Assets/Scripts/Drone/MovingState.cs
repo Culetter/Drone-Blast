@@ -44,6 +44,12 @@ public class MovingState : IDroneState
             return;
         }
 
+        if (drone is IWorkerDrone)
+        {
+            drone.SetState(new UnloadingState());
+            return;
+        }
+
         drone.SetState(new IdleState());
     }
 

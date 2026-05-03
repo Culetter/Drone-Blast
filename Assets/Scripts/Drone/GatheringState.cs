@@ -37,19 +37,19 @@ public class GatheringState : IDroneState
         int resourcesPerGather = worker.GetResourcesPerGather();
         int resourcesAmount = resources.GetResourcesAmoun();
 
+        int toGether = Mathf.Min(inventoryCapacity, resourcesPerGather, resourcesAmount);
+
+        if (toGether <= 0)
+        {
+            drone.SetState(new MovingState());
+            return;
+        }
+
         timer += Time.deltaTime;
 
         if (timer > gatheringTime)
         {
             timer = 0;
-
-            int toGether = Mathf.Min(inventoryCapacity, resourcesPerGather, resourcesAmount);
-
-            if (toGether <= 0)
-            {
-                drone.SetState(new MovingState());
-                return;
-            }
 
             resources.UpdateResources(toGether);
             worker.UpdateInventory(toGether);

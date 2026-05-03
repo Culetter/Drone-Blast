@@ -6,4 +6,5 @@ public interface IWorkerDrone
     int GetRemainingInventory();
     int GetResourcesPerGather();
     void UpdateInventory(int value);
+    void UnloadResources();
 }

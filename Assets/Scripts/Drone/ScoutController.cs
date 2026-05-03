@@ -12,7 +12,7 @@ public class ScoutController : DroneController, IScoutDrone
     }
 
     [ContextMenu("Discover")]
-    private void Gether()
+    public void Discover(GameObject targetSector)
     {
         SetState(new MovingState(targetSector));
     }

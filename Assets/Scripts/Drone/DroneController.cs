@@ -2,7 +2,6 @@ using UnityEngine;
 
 public abstract class DroneController : MonoBehaviour
 {
-    [SerializeField] protected GameObject targetSector;
     private IDroneState _currentState;
     public SpawnPoint SpawnPoint { get; private set; }
     public DroneMovement Movement { get; private set; }

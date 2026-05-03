@@ -8,6 +8,7 @@ TagManager:
   - Base Sector
   - Worker
   - Scout
+  - Logic Manager
   layers:
   - Default
   - TransparentFX

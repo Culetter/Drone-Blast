@@ -14,7 +14,7 @@ public class SectorController : MonoBehaviour
         resourcesController = GetComponent<ResourcesController>();
     }
 
-    public bool GetDiscoveredState() => isDiscovered;
+    public bool IsDiscovered() => isDiscovered;
 
     [ContextMenu("Change State")]
     public void ChangeDiscoveredState()

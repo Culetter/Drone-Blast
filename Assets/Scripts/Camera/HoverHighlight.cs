@@ -1,11 +1,18 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class HoverHighlight : MonoBehaviour
 {
     private Transform highlight;
     private Transform selection;
     private RaycastHit raycastHit;
+    private Vector2 offset = new Vector2(100, 100);
+    private GameObject targetSector;
+    [SerializeField] Button discoverButton;
+    [SerializeField] Button collectButton;
+    [SerializeField] ScoutController scout;
+    [SerializeField] WorkerController worker;
 
     void Update()
     {
@@ -15,8 +22,11 @@ public class HoverHighlight : MonoBehaviour
             highlight = null;
         }
 
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out raycastHit))
+        if (Physics.Raycast(ray, out raycastHit))
         {
             highlight = raycastHit.transform;
             if ((highlight.CompareTag("Sector") || highlight.CompareTag("Base Sector")) && highlight != selection)
@@ -44,16 +54,62 @@ public class HoverHighlight : MonoBehaviour
                 }
                 selection = raycastHit.transform;
                 selection.gameObject.GetComponent<Outline>().enabled = true;
+
+                if (highlight.gameObject.GetComponent<SectorController>().IsDiscovered())
+                    ShowButton(collectButton, highlight);
+                else ShowButton(discoverButton, highlight);
+
                 highlight = null;
             }
             else
             {
                 if (selection)
-                {
-                    selection.gameObject.GetComponent<Outline>().enabled = false;
-                    selection = null;
-                }
+                    HideButtons();
             }
+        }
+    }
+    void ShowButton(Button button, Transform target)
+    {
+        targetSector = target.gameObject;
+
+        RectTransform parent = (RectTransform)button.transform.parent;
+
+        Vector2 screenPoint = Camera.main.WorldToScreenPoint(target.position);
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            parent,
+            screenPoint,
+            null,
+            out Vector2 localPoint
+        );
+
+        button.GetComponent<RectTransform>().anchoredPosition = localPoint + offset;
+        button.gameObject.SetActive(true);
+    }
+    void HideButtons()
+    {
+        selection.gameObject.GetComponent<Outline>().enabled = false;
+        selection = null;
+
+        discoverButton.gameObject.SetActive(false);
+        collectButton.gameObject.SetActive(false);
+        targetSector = null;
+    }
+    public void Gather()
+    {
+        if (targetSector != null)
+        {
+            worker.Gather(targetSector);
+            HideButtons();
+        }
+    }
+
+    public void Discover()
+    {
+        if (targetSector != null)
+        {
+            scout.Discover(targetSector);
+            HideButtons();
         }
     }
 }

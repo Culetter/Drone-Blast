@@ -26,8 +26,14 @@ public class WorkerController : DroneController, IWorkerDrone
         SetState(new GatheringState(target));
     }
 
+    public void UnloadResources()
+    {
+        SpawnPoint.Sector.LoadStorage(inventoryCapacity - remainingInventory);
+        remainingInventory = inventoryCapacity;
+    }
+
     [ContextMenu("Gather")]
-    private void Gather()
+    public void Gather(GameObject targetSector)
     {
         SetState(new MovingState(targetSector));
     }
