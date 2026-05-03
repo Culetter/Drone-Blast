@@ -6,7 +6,6 @@ public class LogicScript : MonoBehaviour
 {
     [SerializeField] int storageResources;
     [SerializeField] TextMeshProUGUI resourcesText;
-
     public void setResources(int resourcesToSet)
     {
         storageResources = resourcesToSet;

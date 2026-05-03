@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -31,6 +32,13 @@ public class WorkerController : DroneController, IWorkerDrone
         SpawnPoint.Sector.LoadStorage(inventoryCapacity - remainingInventory);
         remainingInventory = inventoryCapacity;
     }
+
+    private static readonly HashSet<DroneStateType> availableStates = new()
+    {
+        DroneStateType.Idle
+    };
+
+    public override bool IsAvailable() => availableStates.Contains(_currentState.StateType);
 
     [ContextMenu("Gather")]
     public void Gather(GameObject targetSector)

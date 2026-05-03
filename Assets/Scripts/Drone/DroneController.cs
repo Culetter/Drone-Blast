@@ -2,10 +2,11 @@ using UnityEngine;
 
 public abstract class DroneController : MonoBehaviour
 {
-    private IDroneState _currentState;
+    protected IDroneState _currentState;
     public SpawnPoint SpawnPoint { get; private set; }
     public DroneMovement Movement { get; private set; }
-
+    public DroneRole Role { get; private set; }
+    public event System.Action<DroneController> OnStateChanged;
 
     private void Awake()
     {
@@ -25,16 +26,17 @@ public abstract class DroneController : MonoBehaviour
     public void Init(SpawnPoint point, DroneRole role)
     {
         SpawnPoint = point;
+        Role = role;
         SetState(new IdleState());
     }
-
-
     public void SetState(IDroneState newState)
     {
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter(this);
+        OnStateChanged?.Invoke(this);
     }
 
     public abstract void OnReachTarget(GameObject target);
+    public abstract bool IsAvailable();
 }

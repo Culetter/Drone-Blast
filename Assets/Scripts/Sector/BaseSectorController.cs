@@ -3,7 +3,7 @@ using UnityEngine;
 public class BaseSectorController : MonoBehaviour
 {
     [SerializeField] int storage = 0;
-    [SerializeField] LogicScript logic;
+    private LogicScript logic;
 
     private void Awake()
     {

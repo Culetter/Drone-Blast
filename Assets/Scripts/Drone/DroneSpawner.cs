@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DroneSpawner : MonoBehaviour
@@ -7,8 +9,13 @@ public class DroneSpawner : MonoBehaviour
 
     [SerializeField] SpawnPoint[] workerSpawnPoints;
     [SerializeField] SpawnPoint[] scoutSpawnPoints;
+    private DroneAvailability droneAvailability;
     private SpawnPoint selectedPoint;
     private GameObject drone;
+    private void Awake()
+    {
+        droneAvailability = GameObject.FindGameObjectWithTag("Logic Manager").GetComponent<DroneAvailability>();
+    }
     private void Start()
     {
         SpawnWorker();
@@ -27,9 +34,11 @@ public class DroneSpawner : MonoBehaviour
         }
 
         drone = Instantiate(workerPrefab, selectedPoint.transform.position, Quaternion.identity);
-        drone.GetComponent<DroneController>().Init(selectedPoint, DroneRole.Worker);
+        DroneController controller = drone.GetComponent<DroneController>();
+        controller.Init(selectedPoint, DroneRole.Worker);
 
         selectedPoint.SetOccupied(true);
+        droneAvailability.Register(controller);
     }
 
     [ContextMenu("Spawn Scout")]
@@ -44,9 +53,11 @@ public class DroneSpawner : MonoBehaviour
         }
 
         drone = Instantiate(scoutPrefab, selectedPoint.transform.position, Quaternion.identity);
-        drone.GetComponent<DroneController>().Init(selectedPoint, DroneRole.Scout);
+        DroneController controller = drone.GetComponent<DroneController>();
+        controller.Init(selectedPoint, DroneRole.Scout);
 
         selectedPoint.SetOccupied(true);
+        droneAvailability.Register(controller);
     }
 
     private SpawnPoint GetFreeSpawnPoint(SpawnPoint[] points)

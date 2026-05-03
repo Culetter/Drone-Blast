@@ -11,8 +11,12 @@ public class HoverHighlight : MonoBehaviour
     private GameObject targetSector;
     [SerializeField] Button discoverButton;
     [SerializeField] Button collectButton;
-    [SerializeField] ScoutController scout;
-    [SerializeField] WorkerController worker;
+    private DroneAvailability droneAvailability;
+
+    private void Awake()
+    {
+        droneAvailability = GameObject.FindGameObjectWithTag("Logic Manager").GetComponent<DroneAvailability>();
+    }
 
     void Update()
     {
@@ -97,7 +101,12 @@ public class HoverHighlight : MonoBehaviour
     }
     public void Gather()
     {
-        if (targetSector != null)
+        if (targetSector == null)
+            return;
+
+        DroneController drone = droneAvailability.GetAvailableDrone(DroneRole.Worker);
+
+        if (drone != null && drone is IWorkerDrone worker)
         {
             worker.Gather(targetSector);
             HideButtons();
@@ -106,7 +115,12 @@ public class HoverHighlight : MonoBehaviour
 
     public void Discover()
     {
-        if (targetSector != null)
+        if (targetSector == null)
+            return;
+
+        DroneController drone = droneAvailability.GetAvailableDrone(DroneRole.Scout);
+
+        if (drone != null && drone is IScoutDrone scout)
         {
             scout.Discover(targetSector);
             HideButtons();
