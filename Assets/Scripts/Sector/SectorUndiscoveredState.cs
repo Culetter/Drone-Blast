@@ -14,28 +14,28 @@ public class SectorUndiscoveredState : ISectorState
     {
 
     }
-    public List<SectorActionType> GetAvailableActions()
+    public List<SelectionAction> GetAvailableActions()
     {
-        return new List<SectorActionType>()
+        return new List<SelectionAction>()
         {
-            SectorActionType.Discover
+            SelectionAction.Discover
         };
     }
-    public DroneRole GetRequiredDroneRole(SectorActionType action)
+    public DroneRole GetRequiredDroneRole(SelectionAction action)
     {
         switch (action)
         {
-            case SectorActionType.Discover:
+            case SelectionAction.Discover:
                 return DroneRole.Scout;
             default:
                 throw new System.Exception($"Action {action} not supported in {StateType}");
         }
     }
-    public bool CanPerformAction(SectorActionType action, DroneController drone)
+    public bool CanPerformAction(SelectionAction action, DroneController drone)
     {
         switch (action)
         {
-            case SectorActionType.Discover:
+            case SelectionAction.Discover:
                 return drone != null;
 
             default:

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4252826519300330879}
   - component: {fileID: 4457538737645980468}
   - component: {fileID: 2831728790413918961}
+  - component: {fileID: 1610144024110641748}
   m_Layer: 0
   m_Name: DroneWorker
   m_TagString: Worker
@@ -141,8 +142,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db9c7e894ca92a740b6cafbc4a9bdf69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorkerController
-  targetSector: {fileID: 0}
   gatheringTime: 5
   inventoryCapacity: 10
   remainingInventory: 10
   resourcesPerGather: 1
+  autoMiningUpgrade: 0
+--- !u!114 &1610144024110641748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 51119113127157752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffd71e593d859994da3867831aaab9b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DroneSelectable

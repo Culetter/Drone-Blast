@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class SelectionController : MonoBehaviour
 {
-    [SerializeField] private SelectionUI selectionUI;
+    [SerializeField] SelectionUI selectionUI;
 
-    private GameObject selectedObject;
+    [SerializeField] DronePanelUI dronePanel;
+    [SerializeField] SectorPanelUI sectorPanel;
+
+    private ISelectable selected;
 
     private void Awake()
     {
@@ -16,42 +19,57 @@ public class SelectionController : MonoBehaviour
 
     public void Select(GameObject obj)
     {
-        selectedObject = obj;
+        ClearSelection();
 
-        if (selectedObject == null)
+        selected = obj.GetComponent<ISelectable>();
+
+        if (selected == null)
         {
             selectionUI.Hide();
             return;
         }
 
-        var sector = selectedObject.GetComponent<SectorController>();
+        selected.OnSelect();
 
-        if (sector == null)
-            return;
+        ShowPanel(selected);
 
         selectionUI.Show(
-            selectedObject.transform,
-            sector.GetAvailableActions()
+            selected.GetTransform(),
+            selected.GetActions()
         );
     }
-
-    public void ClaerSelection()
+    private void ShowPanel(ISelectable selectable)
     {
-        selectedObject = null;
+        sectorPanel.Hide();
+        dronePanel.Hide();
+
+        switch (selectable.GetSelectionType())
+        {
+            case SelectionType.Sector:
+                sectorPanel.Show((SectorController)selectable.GetViewData());
+                break;
+            case SelectionType.Drone:
+                dronePanel.Show((DroneController)selectable.GetViewData());
+                break;
+        }
+    }
+    public void ClearSelection()
+    {
+        if (selected != null)
+            selected.OnDeselect();
+
+        selected = null;
+
+        sectorPanel.Hide();
         selectionUI.Hide();
     }
 
-    public void HandleAction(SectorActionType action)
+    public void HandleAction(SelectionAction action)
     {
-        if (selectedObject == null)
+        if (selected == null)
             return;
 
-        var sector = selectedObject.GetComponent<SectorController>();
-
-        if (sector == null)
-            return;
-
-        bool success = sector.PerformAction(action);
+        bool success = selected.PerformAction(action);
 
         if (success)
             selectionUI.Hide();

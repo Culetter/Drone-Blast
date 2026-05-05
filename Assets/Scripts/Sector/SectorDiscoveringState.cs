@@ -22,11 +22,11 @@ public class SectorDiscoveringState : ISectorState
     {
         return false;
     }
-    public List<SectorActionType> GetAvailableActions()
+    public List<SelectionAction> GetAvailableActions()
     {
         return null;
     }
-    public DroneRole GetRequiredDroneRole(SectorActionType action)
+    public DroneRole GetRequiredDroneRole(SelectionAction action)
     {
         switch (action)
         {
@@ -34,7 +34,7 @@ public class SectorDiscoveringState : ISectorState
                 throw new System.Exception($"Action {action} not supported in {StateType}");
         }
     }
-    public bool CanPerformAction(SectorActionType action, DroneController drone)
+    public bool CanPerformAction(SelectionAction action, DroneController drone)
     {
         switch (action)
         {

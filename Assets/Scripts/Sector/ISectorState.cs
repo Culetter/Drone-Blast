@@ -6,7 +6,7 @@ public interface ISectorState
     SectorStateType StateType { get; }
     void Enter(SectorController sector);
     void Exit();
-    List<SectorActionType> GetAvailableActions();
-    DroneRole GetRequiredDroneRole(SectorActionType action);
-    bool CanPerformAction(SectorActionType action, DroneController drone);
+    List<SelectionAction> GetAvailableActions();
+    DroneRole GetRequiredDroneRole(SelectionAction action);
+    bool CanPerformAction(SelectionAction action, DroneController drone);
 }

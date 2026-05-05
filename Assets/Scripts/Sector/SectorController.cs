@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SectorController : MonoBehaviour
 {
@@ -8,7 +9,8 @@ public class SectorController : MonoBehaviour
     private ISectorState _currentState;
     private ResourcesController _resourcesController;
     DroneAvailability droneAvailability;
-    public event System.Action<SectorController> OnStateChanged;
+    public event Action<SectorController> OnStateChanged;
+    public event Action OnDataChanged;
 
     private void Awake()
     {
@@ -26,11 +28,11 @@ public class SectorController : MonoBehaviour
         return _currentState.StateType;
     }
 
-    public List<SectorActionType> GetAvailableActions()
+    public List<SelectionAction> GetAvailableActions()
     {
         return _currentState.GetAvailableActions();
     }
-    public bool PerformAction(SectorActionType action)
+    public bool PerformAction(SelectionAction action)
     {
         DroneRole role = _currentState.GetRequiredDroneRole(action);
         DroneController drone = droneAvailability.GetAvailableDrone(role);
@@ -42,10 +44,10 @@ public class SectorController : MonoBehaviour
 
         switch (action)
         {
-            case SectorActionType.Discover:
+            case SelectionAction.Discover:
                 SetState(new SectorDiscoveringState());
                 break;
-            case SectorActionType.Gather:
+            case SelectionAction.Gather:
                 SetState(new SectorGatheringState());
                 break;
         }
@@ -61,14 +63,23 @@ public class SectorController : MonoBehaviour
         {
             SetState(new SectorEmptyState());
         }
+        OnDataChanged?.Invoke();
+    }
+
+    public int GetAvailableResources()
+    {
+        if (_currentState.StateType == SectorStateType.Undiscovered)
+            return 0;
+
+        return _resourcesController.GetResourcesAmount();
     }
 
     [ContextMenu("Change State")]
     public void ChangeDiscoveredState()
     {
-        SetState(new SectorDiscoveredState());
         GetComponent<Renderer>().material = discoveredMaterial;
         _resourcesController.Init();
+        SetState(new SectorDiscoveredState());
     }
 
     private void SetState(ISectorState newState)
@@ -77,5 +88,14 @@ public class SectorController : MonoBehaviour
         _currentState = newState;
         _currentState.Enter(this);
         OnStateChanged?.Invoke(this);
+        OnDataChanged?.Invoke();
+    }
+    public SectorData GetData()
+    {
+        return new SectorData
+        {
+            sectorState = _currentState.StateType,
+            remainingResources = _resourcesController.GetResourcesAmount()
+        };
     }
 }

@@ -13,28 +13,28 @@ public class SectorDiscoveredState : ISectorState
     {
 
     }
-    public List<SectorActionType> GetAvailableActions()
+    public List<SelectionAction> GetAvailableActions()
     {
-        return new List<SectorActionType>()
+        return new List<SelectionAction>()
         {
-            SectorActionType.Gather
+            SelectionAction.Gather
         };
     }
-    public DroneRole GetRequiredDroneRole(SectorActionType action)
+    public DroneRole GetRequiredDroneRole(SelectionAction action)
     {
         switch (action)
         {
-            case SectorActionType.Gather:
+            case SelectionAction.Gather:
                 return DroneRole.Worker;
             default:
                 throw new System.Exception($"Action {action} not supported in {StateType}");
         }
     }
-    public bool CanPerformAction(SectorActionType action, DroneController drone)
+    public bool CanPerformAction(SelectionAction action, DroneController drone)
     {
         switch (action)
         {
-            case SectorActionType.Gather:
+            case SelectionAction.Gather:
                 return drone != null;
 
             default:

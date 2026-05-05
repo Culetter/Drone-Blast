@@ -19,14 +19,22 @@ public class ScoutController : DroneController, IScoutDrone
         SetState(new DiscoveringState(target));
     }
 
-    public override void Action(GameObject target, SectorActionType action)
+    public override void Action(GameObject target, SelectionAction action)
     {
         switch (action)
         {
-            case SectorActionType.Discover:
+            case SelectionAction.Discover:
                 SetState(new MovingState(target));
                 break;
         }
-        
+    }
+    public override DroneData GetData()
+    {
+        return new DroneData
+        {
+            role = Role,
+            state = _currentState.StateType,
+            discoveringTime = GetDiscoverTime()
+        };
     }
 }

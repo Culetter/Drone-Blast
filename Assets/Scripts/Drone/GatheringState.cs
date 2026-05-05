@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GatheringState : IDroneState
 {
     private DroneController drone;
     private GameObject target;
-    private ResourcesController resources;
+    private SectorController sector;
     private IWorkerDrone worker;
 
     private float timer = 0;
@@ -27,7 +28,7 @@ public class GatheringState : IDroneState
 
         worker = workerDrone;
         this.drone = drone;
-        resources = target.GetComponent<ResourcesController>();
+        sector = target.GetComponent<SectorController>();
     }
 
     public void Update()
@@ -35,7 +36,7 @@ public class GatheringState : IDroneState
         float gatheringTime = worker.GetGatheringTime();
         int inventoryCapacity = worker.GetRemainingInventory();
         int resourcesPerGather = worker.GetResourcesPerGather();
-        int resourcesAmount = resources.GetResourcesAmount();
+        int resourcesAmount = sector.GetAvailableResources();
 
         int toGether = Mathf.Min(inventoryCapacity, resourcesPerGather, resourcesAmount);
 
@@ -51,7 +52,7 @@ public class GatheringState : IDroneState
         {
             timer = 0;
 
-            resources.UpdateResources(toGether);
+            sector.TakeResources(toGether);
             worker.UpdateInventory(toGether);
         }
     }

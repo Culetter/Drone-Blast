@@ -27,9 +27,9 @@ public class HoverHighlight : MonoBehaviour
 
     void HandleHighlight()
     {
-        if (highlight != null)
+        if (highlight != null && highlight != selection)
         {
-            highlight.gameObject.GetComponent<Outline>().enabled = false;
+            SetOutline(highlight, false);
             highlight = null;
         }
 
@@ -37,24 +37,19 @@ public class HoverHighlight : MonoBehaviour
             return;
 
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
         if (Physics.Raycast(ray, out raycastHit))
         {
-            highlight = raycastHit.transform;
-            if ((highlight.CompareTag("Sector") || highlight.CompareTag("Base Sector")) && highlight != selection)
-            {
-                Outline outline = highlight.gameObject.GetComponent<Outline>();
-                if (outline != null)
-                    outline.enabled = true;
-                else
-                {
-                    outline = highlight.gameObject.AddComponent<Outline>();
+            Transform newHover = raycastHit.transform;
 
-                    outline.enabled = true;
-                    outline.OutlineColor = Color.red;
-                    outline.OutlineWidth = 7.0f;
-                }
+            if (newHover == selection)
+                return;
+
+            if (IsValid(newHover))
+            {
+                highlight = newHover;
+                SetOutline(highlight, true);
             }
-            else highlight = null;
         }
     }
 
@@ -65,10 +60,10 @@ public class HoverHighlight : MonoBehaviour
             selectionController.Select(highlight.gameObject);
 
             if (selection != null)
-                selection.gameObject.GetComponent<Outline>().enabled = false;
+                SetOutline(selection, false);
 
-            selection = raycastHit.transform;
-            selection.gameObject.GetComponent<Outline>().enabled = true;
+            selection = highlight;
+            SetOutline(selection, true);
 
             highlight = null;
         }
@@ -76,10 +71,33 @@ public class HoverHighlight : MonoBehaviour
         {
             if (selection && !EventSystem.current.IsPointerOverGameObject())
             {
-                selection.gameObject.GetComponent<Outline>().enabled = false;
+                SetOutline(selection, false);
                 selection = null;
-                selectionController.ClaerSelection();
+                selectionController.ClearSelection();
             }
         }
+    }
+
+    void SetOutline(Transform t, bool state)
+    {
+        var outline = t.GetComponent<Outline>();
+
+        if (outline == null && state)
+        {
+            outline = t.gameObject.AddComponent<Outline>();
+            outline.OutlineColor = Color.red;
+            outline.OutlineWidth = 7f;
+        }
+
+        if (outline != null)
+            outline.enabled = state;
+    }
+
+    bool IsValid(Transform t)
+    {
+        return t.CompareTag("Sector")
+            || t.CompareTag("Base Sector")
+            || t.CompareTag("Scout")
+            || t.CompareTag("Worker");
     }
 }

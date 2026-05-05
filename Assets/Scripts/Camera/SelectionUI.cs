@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class SelectionUI : MonoBehaviour
 {
-    public event System.Action<SectorActionType> OnActionClicked;
+    public event System.Action<SelectionAction> OnActionClicked;
 
     [SerializeField] Button discoverButton;
     [SerializeField] Button collectButton;
 
-    private readonly Dictionary<SectorActionType, Button> actionButtons = new();
+    private readonly Dictionary<SelectionAction, Button> actionButtons = new();
 
     private RectTransform parent;
     private Camera cam;
@@ -24,8 +24,8 @@ public class SelectionUI : MonoBehaviour
         cam = Camera.main;
         parent = (RectTransform)discoverButton.transform.parent;
 
-        actionButtons[SectorActionType.Discover] = discoverButton;
-        actionButtons[SectorActionType.Gather] = collectButton;
+        actionButtons[SelectionAction.Discover] = discoverButton;
+        actionButtons[SelectionAction.Gather] = collectButton;
 
         Hide();
     }
@@ -38,7 +38,7 @@ public class SelectionUI : MonoBehaviour
         UpdatePosition();
     }
 
-    public void Show(Transform worldTarget, List<SectorActionType> actions)
+    public void Show(Transform worldTarget, List<SelectionAction> actions)
     {
         Hide();
 
@@ -83,10 +83,10 @@ public class SelectionUI : MonoBehaviour
     }
     public void OnDiscoverClicked()
     {
-        OnActionClicked?.Invoke(SectorActionType.Discover);
+        OnActionClicked?.Invoke(SelectionAction.Discover);
     }
     public void OnGatherClicked()
     {
-        OnActionClicked?.Invoke(SectorActionType.Gather);
+        OnActionClicked?.Invoke(SelectionAction.Gather);
     }
 }

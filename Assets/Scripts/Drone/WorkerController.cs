@@ -22,6 +22,7 @@ public class WorkerController : DroneController, IWorkerDrone
     public void UpdateInventory(int value)
     {
         remainingInventory -= value;
+        NotifyChange();
     }
 
     public override void OnReachTarget(GameObject target)
@@ -33,6 +34,7 @@ public class WorkerController : DroneController, IWorkerDrone
     {
         SpawnPoint.Sector.LoadStorage(inventoryCapacity - remainingInventory);
         remainingInventory = inventoryCapacity;
+        NotifyChange();
     }
 
     private static readonly HashSet<DroneStateType> availableStates = new()
@@ -42,14 +44,26 @@ public class WorkerController : DroneController, IWorkerDrone
 
     public override bool IsAvailable() => availableStates.Contains(_currentState.StateType);
 
-    public override void Action(GameObject target, SectorActionType action)
+    public override void Action(GameObject target, SelectionAction action)
     {
         switch (action)
         {
-            case SectorActionType.Gather:
+            case SelectionAction.Gather:
                 SetState(new MovingState(target));
                 break;
         }
         
+    }
+    public override DroneData GetData()
+    {
+        return new DroneData
+        {
+            role = Role,
+            state = _currentState.StateType,
+            gatheringTime = gatheringTime,
+            inventoryCapacity = inventoryCapacity,
+            remainingInventory = remainingInventory,
+            resourcesPerGather = resourcesPerGather
+        };
     }
 }
