@@ -35,7 +35,7 @@ public class GatheringState : IDroneState
         float gatheringTime = worker.GetGatheringTime();
         int inventoryCapacity = worker.GetRemainingInventory();
         int resourcesPerGather = worker.GetResourcesPerGather();
-        int resourcesAmount = resources.GetResourcesAmoun();
+        int resourcesAmount = resources.GetResourcesAmount();
 
         int toGether = Mathf.Min(inventoryCapacity, resourcesPerGather, resourcesAmount);
 

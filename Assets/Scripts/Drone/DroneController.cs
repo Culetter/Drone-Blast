@@ -38,5 +38,6 @@ public abstract class DroneController : MonoBehaviour
     }
 
     public abstract void OnReachTarget(GameObject target);
+    public abstract void Action(GameObject target, SectorActionType action);
     public abstract bool IsAvailable();
 }

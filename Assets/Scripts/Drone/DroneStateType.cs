@@ -5,5 +5,6 @@ public enum DroneStateType
     Discovering,
     MovingToBaseSector,
     Gathering,
+    Searching,
     Unloading
 }

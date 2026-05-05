@@ -19,9 +19,14 @@ public class ScoutController : DroneController, IScoutDrone
         SetState(new DiscoveringState(target));
     }
 
-    [ContextMenu("Discover")]
-    public void Discover(GameObject targetSector)
+    public override void Action(GameObject target, SectorActionType action)
     {
-        SetState(new MovingState(targetSector));
+        switch (action)
+        {
+            case SectorActionType.Discover:
+                SetState(new MovingState(target));
+                break;
+        }
+        
     }
 }

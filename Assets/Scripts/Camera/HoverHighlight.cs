@@ -4,21 +4,28 @@ using UnityEngine.UI;
 
 public class HoverHighlight : MonoBehaviour
 {
+    [SerializeField] SelectionController selectionController;
     private Transform highlight;
     private Transform selection;
     private RaycastHit raycastHit;
-    private Vector2 offset = new Vector2(100, 100);
-    private GameObject targetSector;
-    [SerializeField] Button discoverButton;
-    [SerializeField] Button collectButton;
-    private DroneAvailability droneAvailability;
+    private Camera cam;
 
     private void Awake()
     {
-        droneAvailability = GameObject.FindGameObjectWithTag("Logic Manager").GetComponent<DroneAvailability>();
+        cam = Camera.main;
     }
 
     void Update()
+    {
+        HandleHighlight();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            HandleClick();
+        }
+    }
+
+    void HandleHighlight()
     {
         if (highlight != null)
         {
@@ -29,101 +36,50 @@ public class HoverHighlight : MonoBehaviour
         if (EventSystem.current.IsPointerOverGameObject())
             return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out raycastHit))
         {
             highlight = raycastHit.transform;
             if ((highlight.CompareTag("Sector") || highlight.CompareTag("Base Sector")) && highlight != selection)
             {
-                if (highlight.gameObject.GetComponent<Outline>() != null)
-                    highlight.gameObject.GetComponent<Outline>().enabled = true;
+                Outline outline = highlight.gameObject.GetComponent<Outline>();
+                if (outline != null)
+                    outline.enabled = true;
                 else
                 {
-                    Outline outline = highlight.gameObject.AddComponent<Outline>();
+                    outline = highlight.gameObject.AddComponent<Outline>();
+
                     outline.enabled = true;
-                    highlight.gameObject.GetComponent<Outline>().OutlineColor = Color.magenta;
-                    highlight.gameObject.GetComponent<Outline>().OutlineWidth = 7.0f;
+                    outline.OutlineColor = Color.red;
+                    outline.OutlineWidth = 7.0f;
                 }
             }
             else highlight = null;
         }
+    }
 
-        if (Input.GetMouseButtonDown(0))
+    void HandleClick()
+    {
+        if (highlight)
         {
-            if (highlight)
-            {
-                if (selection != null)
-                {
-                    selection.gameObject.GetComponent<Outline>().enabled = false;
-                }
-                selection = raycastHit.transform;
-                selection.gameObject.GetComponent<Outline>().enabled = true;
+            selectionController.Select(highlight.gameObject);
 
-                if (highlight.gameObject.GetComponent<SectorController>().IsDiscovered())
-                    ShowButton(collectButton, highlight);
-                else ShowButton(discoverButton, highlight);
+            if (selection != null)
+                selection.gameObject.GetComponent<Outline>().enabled = false;
 
-                highlight = null;
-            }
-            else
-            {
-                if (selection)
-                    HideButtons();
-            }
+            selection = raycastHit.transform;
+            selection.gameObject.GetComponent<Outline>().enabled = true;
+
+            highlight = null;
         }
-    }
-    void ShowButton(Button button, Transform target)
-    {
-        targetSector = target.gameObject;
-
-        RectTransform parent = (RectTransform)button.transform.parent;
-
-        Vector2 screenPoint = Camera.main.WorldToScreenPoint(target.position);
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            parent,
-            screenPoint,
-            null,
-            out Vector2 localPoint
-        );
-
-        button.GetComponent<RectTransform>().anchoredPosition = localPoint + offset;
-        button.gameObject.SetActive(true);
-    }
-    void HideButtons()
-    {
-        selection.gameObject.GetComponent<Outline>().enabled = false;
-        selection = null;
-
-        discoverButton.gameObject.SetActive(false);
-        collectButton.gameObject.SetActive(false);
-        targetSector = null;
-    }
-    public void Gather()
-    {
-        if (targetSector == null)
-            return;
-
-        DroneController drone = droneAvailability.GetAvailableDrone(DroneRole.Worker);
-
-        if (drone != null && drone is IWorkerDrone worker)
+        else
         {
-            worker.Gather(targetSector);
-            HideButtons();
-        }
-    }
-
-    public void Discover()
-    {
-        if (targetSector == null)
-            return;
-
-        DroneController drone = droneAvailability.GetAvailableDrone(DroneRole.Scout);
-
-        if (drone != null && drone is IScoutDrone scout)
-        {
-            scout.Discover(targetSector);
-            HideButtons();
+            if (selection && !EventSystem.current.IsPointerOverGameObject())
+            {
+                selection.gameObject.GetComponent<Outline>().enabled = false;
+                selection = null;
+                selectionController.ClaerSelection();
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ public class SectorSpawner : MonoBehaviour
 {
     [SerializeField] GameObject sectorPrefab;
     [SerializeField] GameObject basePrefab;
+    [SerializeField] SectorRegister sectorRegister;
 
     [SerializeField] int sizeX = 11;
     [SerializeField] int sizeZ = 11;
@@ -13,6 +14,7 @@ public class SectorSpawner : MonoBehaviour
     void Start()
     {
         Vector3 offset = new Vector3((sizeX - 1) * sectorSize / 2f, 0f, (sizeZ - 1) * sectorSize / 2f);
+        GameObject sector;
 
         for (int x = 0; x < sizeX; x++)
         {
@@ -26,7 +28,8 @@ public class SectorSpawner : MonoBehaviour
                     continue;
                 }
 
-                Instantiate(sectorPrefab, position, Quaternion.identity, transform);
+                sector = Instantiate(sectorPrefab, position, Quaternion.identity, transform);
+                sectorRegister.Register(sector.GetComponent<SectorController>());
             }
         }
     }

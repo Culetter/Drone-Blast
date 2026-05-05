@@ -5,7 +5,8 @@ public class IdleState : IDroneState
     public DroneStateType StateType => DroneStateType.Idle;
     public void Enter(DroneController drone)
     {
-        Debug.Log("Idle State");
+        if (drone is IWorkerDrone worker && worker.HasAutoMiningUpgrade())
+            drone.SetState(new SearchingState());
     }
 
     public void Update()

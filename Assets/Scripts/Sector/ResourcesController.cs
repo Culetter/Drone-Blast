@@ -30,7 +30,7 @@ public class ResourcesController : MonoBehaviour
         UpdateResources(0);
     }
 
-    public int GetResourcesAmoun() => currentResourceAmount;
+    public int GetResourcesAmount() => currentResourceAmount;
 
     public void UpdateResources(int gatheredAmount)
     {

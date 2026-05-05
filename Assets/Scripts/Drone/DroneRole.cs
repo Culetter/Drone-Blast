@@ -1,5 +1,6 @@
 public enum DroneRole
 {
     Scout,
-    Worker
+    Worker,
+    None
 }
