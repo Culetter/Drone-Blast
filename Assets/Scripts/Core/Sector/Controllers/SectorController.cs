@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class SectorController : MonoBehaviour
 {
@@ -8,11 +8,12 @@ public class SectorController : MonoBehaviour
 
     private ISectorState _currentState;
     private ResourcesController _resourcesController;
-    DroneAvailability droneAvailability;
+    private SectorStateType _previousStateType;
+    private DroneAvailability droneAvailability;
+    private BaseSectorController baseSector;
+
     public event Action<SectorController> OnStateChanged;
     public event Action OnDataChanged;
-    BaseSectorController baseSector;
-    private SectorStateType _previousStateType;
 
     private void Awake()
     {
@@ -24,31 +25,38 @@ public class SectorController : MonoBehaviour
     {
         SetState(new SectorUndiscoveredState(), null);
     }
+
     public void Init(BaseSectorController baseSector)
     {
         this.baseSector = baseSector;
     }
+
     public SectorStateType GetState()
     {
         return _currentState.StateType;
     }
+
     public bool BaseHasAutoMiningUpgrade() => baseSector.HasAutoMiningUpgrade();
+
     public List<SelectionAction> GetAvailableActions()
     {
         return _currentState.GetAvailableActions();
     }
+
     public bool PerformAction(SelectionAction action)
     {
         DroneRole role = _currentState.GetRequiredDroneRole(action);
         DroneController drone;
-        Debug.Log("True 1");
+
+
         if (role == DroneRole.None)
             drone = _currentState.ResponsibleDrone;
-        else drone = droneAvailability.GetAvailableDrone(role);
+        else
+            drone = droneAvailability.GetAvailableDrone(role);
 
         if (!_currentState.CanPerformAction(action, drone))
             return false;
-        Debug.Log("True 2");
+
         drone.Action(gameObject, action);
 
         switch (action)
@@ -56,9 +64,11 @@ public class SectorController : MonoBehaviour
             case SelectionAction.Discover:
                 SetState(new SectorDiscoveringState(), drone);
                 break;
+
             case SelectionAction.Gather:
                 SetState(new SectorGatheringState(), drone);
                 break;
+
             case SelectionAction.Cancel:
                 SetPreviousState();
                 drone.SetState(new MovingState());
@@ -67,18 +77,21 @@ public class SectorController : MonoBehaviour
 
         return true;
     }
+
     public void SetPreviousState()
     {
-        switch(_previousStateType)
+        switch (_previousStateType)
         {
             case SectorStateType.Undiscovered:
                 SetState(new SectorUndiscoveredState(), null);
                 break;
+
             case SectorStateType.Discovered:
                 SetState(new SectorDiscoveredState(), null);
                 break;
         }
     }
+
     public void TakeResources(int amount)
     {
         _resourcesController.UpdateResources(amount);
@@ -87,6 +100,7 @@ public class SectorController : MonoBehaviour
         {
             SetState(new SectorEmptyState(), null);
         }
+
         OnDataChanged?.Invoke();
     }
 
@@ -106,15 +120,6 @@ public class SectorController : MonoBehaviour
         SetState(new SectorDiscoveredState(), drone);
     }
 
-    private void SetState(ISectorState newState, DroneController drone)
-    {
-        _currentState?.Exit();
-        _previousStateType = _currentState?.StateType ?? SectorStateType.Undiscovered;
-        _currentState = newState;
-        _currentState.Enter(this, drone);
-        OnStateChanged?.Invoke(this);
-        OnDataChanged?.Invoke();
-    }
     public SectorData GetData()
     {
         return new SectorData
@@ -122,5 +127,17 @@ public class SectorController : MonoBehaviour
             sectorState = _currentState.StateType,
             remainingResources = _resourcesController.GetResourcesAmount()
         };
+    }
+
+    private void SetState(ISectorState newState, DroneController drone)
+    {
+        _currentState?.Exit();
+        _previousStateType = _currentState?.StateType ?? SectorStateType.Undiscovered;
+        _currentState = newState;
+
+        _currentState.Enter(this, drone);
+
+        OnStateChanged?.Invoke(this);
+        OnDataChanged?.Invoke();
     }
 }
