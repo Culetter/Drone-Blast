@@ -26,6 +26,8 @@ public class DiscoveringState : IDroneState
 
         if (drone is IScoutDrone scout)
             discoverTime = scout.GetDiscoverTime();
+
+        drone.gameObject.GetComponent<DroneIconController>().SetSerachingIcon();
     }
 
     public void Update()
@@ -39,5 +41,8 @@ public class DiscoveringState : IDroneState
         }
     }
 
-    public void Exit() { }
+    public void Exit() 
+    {
+        drone.gameObject.GetComponent<DroneIconController>().HideIcon();
+    }
 }

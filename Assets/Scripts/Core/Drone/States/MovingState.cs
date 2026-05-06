@@ -37,6 +37,9 @@ public class MovingState : IDroneState
             targetPos.y = drone.SpawnPoint.transform.position.y;
 
             drone.Movement.SetTarget(targetObject);
+
+            if (drone.Role == DroneRole.Scout) drone.gameObject.GetComponent<DroneIconController>().SetSerachingIcon();
+            else drone.gameObject.GetComponent<DroneIconController>().SetGatheringIcon();
         }
         else
         {
@@ -70,5 +73,8 @@ public class MovingState : IDroneState
         drone.SetState(new IdleState());
     }
 
-    public void Exit() { }
+    public void Exit() 
+    {
+        drone.gameObject.GetComponent<DroneIconController>().HideIcon();
+    }
 }

@@ -30,6 +30,7 @@ public class GatheringState : IDroneState
         worker = workerDrone;
         this.drone = drone;
         sector = target.GetComponent<SectorController>();
+        drone.gameObject.GetComponent<DroneIconController>().SetGatheringIcon();
     }
 
     public void Update()
@@ -62,5 +63,7 @@ public class GatheringState : IDroneState
     {
         if (resourcesAmount > 0)
             sector.SetPreviousState();
+
+        drone.gameObject.GetComponent<DroneIconController>().HideIcon();
     }
 }
