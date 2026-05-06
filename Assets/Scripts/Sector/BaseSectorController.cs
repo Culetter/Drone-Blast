@@ -4,6 +4,18 @@ public class BaseSectorController : MonoBehaviour
 {
     [SerializeField] int storage = 0;
     private LogicScript logic;
+    [SerializeField] bool autoMiningUpgrade = false;
+    public bool HasAutoMiningUpgrade() => autoMiningUpgrade;
+    public bool BuyAutoMiningUpgrade(int price)
+    {
+        if (price > storage)
+            return false;
+
+        autoMiningUpgrade = true;
+        storage -= price;
+        SetResources();
+        return true;
+    }
 
     private void Awake()
     {
@@ -13,6 +25,7 @@ public class BaseSectorController : MonoBehaviour
     public void LoadStorage(int value)
     {
         storage += value;
-        logic.setResources(storage);
+        SetResources();
     }
+    private void SetResources() => logic.SetResources(storage);
 }

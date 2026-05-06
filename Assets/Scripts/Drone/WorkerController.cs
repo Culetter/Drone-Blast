@@ -8,7 +8,6 @@ public class WorkerController : DroneController, IWorkerDrone
     [SerializeField] int inventoryCapacity = 10;
     [SerializeField] int remainingInventory;
     [SerializeField] int resourcesPerGather = 1;
-    [SerializeField] bool autoMiningUpgrade = false;
 
     WorkerController()
     {
@@ -18,7 +17,8 @@ public class WorkerController : DroneController, IWorkerDrone
     public float GetGatheringTime() => gatheringTime;
     public int GetRemainingInventory() => remainingInventory;
     public int GetResourcesPerGather() => resourcesPerGather;
-    public bool HasAutoMiningUpgrade() => autoMiningUpgrade;
+    public bool BaseHasAutoGatheringUpdate() => BaseSector.HasAutoMiningUpgrade();
+
     public void UpdateInventory(int value)
     {
         remainingInventory -= value;
@@ -39,7 +39,7 @@ public class WorkerController : DroneController, IWorkerDrone
 
     private static readonly HashSet<DroneStateType> availableStates = new()
     {
-        DroneStateType.Idle
+        DroneStateType.Idle, DroneStateType.Searching
     };
 
     public override bool IsAvailable() => availableStates.Contains(_currentState.StateType);

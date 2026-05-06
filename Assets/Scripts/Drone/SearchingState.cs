@@ -17,12 +17,12 @@ public class SearchingState : IDroneState
     }
     public void Update()
     {
-        sector = sectorRegister.GetDiscoveredSector();
+        sector = sectorRegister.GetClosestToBase(drone.BaseSector);
 
         if (sector == null)
             return;
 
-        drone.SetState(new MovingState(sector.gameObject));
+        sector.PerformAction(SelectionAction.Gather);
     }
     public void Exit()
     {

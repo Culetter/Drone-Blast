@@ -7,6 +7,7 @@ public class GatheringState : IDroneState
     private GameObject target;
     private SectorController sector;
     private IWorkerDrone worker;
+    private int resourcesAmount;
 
     private float timer = 0;
 
@@ -36,7 +37,7 @@ public class GatheringState : IDroneState
         float gatheringTime = worker.GetGatheringTime();
         int inventoryCapacity = worker.GetRemainingInventory();
         int resourcesPerGather = worker.GetResourcesPerGather();
-        int resourcesAmount = sector.GetAvailableResources();
+        resourcesAmount = sector.GetAvailableResources();
 
         int toGether = Mathf.Min(inventoryCapacity, resourcesPerGather, resourcesAmount);
 
@@ -57,5 +58,9 @@ public class GatheringState : IDroneState
         }
     }
 
-    public void Exit() { }
+    public void Exit() 
+    {
+        if (resourcesAmount > 0)
+            sector.SetPreviousState();
+    }
 }

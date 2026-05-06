@@ -6,11 +6,13 @@ using UnityEngine;
 public abstract class DroneController : MonoBehaviour
 {
     protected IDroneState _currentState;
+    public BaseSectorController BaseSector {  get; protected set; }
     public SpawnPoint SpawnPoint { get; private set; }
     public DroneMovement Movement { get; private set; }
     public DroneRole Role { get; private set; }
     public event Action<DroneController> OnStateChanged;
     public event Action OnDataChanged;
+    public Vector3[] CurrentPath { get; private set; }
 
     private void Awake()
     {
@@ -31,7 +33,14 @@ public abstract class DroneController : MonoBehaviour
     {
         SpawnPoint = point;
         Role = role;
+        BaseSector = point.Sector;
         SetState(new IdleState());
+    }
+    public void SetPath(Vector3[] path)
+    {
+        CurrentPath = path;
+
+        GetComponent<DronePathVisualizer>()?.SetPoints(path);
     }
     public void SetState(IDroneState newState)
     {

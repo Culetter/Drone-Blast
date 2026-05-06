@@ -6,6 +6,7 @@ public class DroneMovement : MonoBehaviour
     [SerializeField] float rotationSpeed = 5f;
     [SerializeField] float arriveDistance = 0f;
 
+    public bool IsMoving { get; private set; }
     private Vector3 target;
     private bool hasTarget = false;
     private bool isRotating = false;
@@ -16,6 +17,7 @@ public class DroneMovement : MonoBehaviour
         {
             if (HasReachedTarget())
             {
+                IsMoving = false;
                 hasTarget = false;
                 isRotating = true;
                 return;
@@ -33,7 +35,6 @@ public class DroneMovement : MonoBehaviour
             }
         }
     }
-
     private void MoveToTarget()
     {
         Vector3 direction = (target - transform.position);
@@ -73,12 +74,14 @@ public class DroneMovement : MonoBehaviour
 
     public void SetTarget(GameObject sectorTarget)
     {
+        IsMoving = true;
         target = new Vector3(sectorTarget.transform.position.x, transform.position.y, sectorTarget.transform.position.z);
         hasTarget = true;
     }
 
     public void SetTarget(SpawnPoint targetPos)
     {
+        IsMoving = true;
         target = targetPos.transform.position;
         hasTarget = true;
     }

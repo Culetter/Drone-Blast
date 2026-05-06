@@ -7,5 +7,5 @@ public interface IWorkerDrone
     int GetResourcesPerGather();
     void UpdateInventory(int value);
     void UnloadResources();
-    bool HasAutoMiningUpgrade();
+    bool BaseHasAutoGatheringUpdate();
 }

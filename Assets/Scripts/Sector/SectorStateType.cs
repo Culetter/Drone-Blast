@@ -6,5 +6,6 @@ public enum SectorStateType
     Discovering,
     Discovered,
     Gathering,
-    Empty
+    Empty,
+    Canceling
 }

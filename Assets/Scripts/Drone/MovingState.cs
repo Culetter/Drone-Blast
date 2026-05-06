@@ -27,12 +27,28 @@ public class MovingState : IDroneState
     {
         this.drone = drone;
 
+        Vector3 start = drone.transform.position;
+
+        Vector3 targetPos;
+
         if (targetObject != null)
         {
+            targetPos = targetObject.transform.position;
+            targetPos.y = drone.SpawnPoint.transform.position.y;
+
             drone.Movement.SetTarget(targetObject);
-            return;
         }
-        drone.Movement.SetTarget(drone.SpawnPoint);
+        else
+        {
+            drone.Movement.SetTarget(drone.SpawnPoint);
+            targetPos = drone.SpawnPoint.transform.position;
+        }
+
+        drone.SetPath(new Vector3[]
+        {
+            start,
+            targetPos
+        });
     }
 
     public void Update()

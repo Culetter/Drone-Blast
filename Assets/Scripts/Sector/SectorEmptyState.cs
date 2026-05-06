@@ -4,9 +4,10 @@ using UnityEngine;
 public class SectorEmptyState : ISectorState
 {
     public SectorStateType StateType => SectorStateType.Empty;
-    public void Enter(SectorController sector)
+    public DroneController ResponsibleDrone { get; private set; }
+    public void Enter(SectorController sector, DroneController drone)
     {
-
+        ResponsibleDrone = drone;
     }
 
     public void Exit()

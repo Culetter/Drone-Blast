@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SectorSpawner : MonoBehaviour
 {
@@ -14,7 +15,9 @@ public class SectorSpawner : MonoBehaviour
     void Start()
     {
         Vector3 offset = new Vector3((sizeX - 1) * sectorSize / 2f, 0f, (sizeZ - 1) * sectorSize / 2f);
-        GameObject sector;
+        GameObject sector, baseSector;
+
+        baseSector = Instantiate(basePrefab, new Vector3(0, 0, 0), Quaternion.identity, transform);
 
         for (int x = 0; x < sizeX; x++)
         {
@@ -23,12 +26,10 @@ public class SectorSpawner : MonoBehaviour
                 Vector3 position = new Vector3(x * sectorSize, 0, z * sectorSize) - offset;
 
                 if (position.x == 0 && position.z == 0)
-                {
-                    Instantiate(basePrefab, position, Quaternion.identity, transform);
                     continue;
-                }
 
                 sector = Instantiate(sectorPrefab, position, Quaternion.identity, transform);
+                sector.GetComponent<SectorController>().Init(baseSector.GetComponent<BaseSectorController>());
                 sectorRegister.Register(sector.GetComponent<SectorController>());
             }
         }

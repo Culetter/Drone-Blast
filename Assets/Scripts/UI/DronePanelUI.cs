@@ -54,7 +54,7 @@ public class DronePanelUI : MonoBehaviour
         inventoryText.gameObject.SetActive(data.remainingInventory.HasValue);
 
         if (data.remainingInventory.HasValue)
-            inventoryText.text = $"Inventory: {data.remainingInventory}/{data.inventoryCapacity}";
+            inventoryText.text = $"Inventory: {data.inventoryCapacity - data.remainingInventory}/{data.inventoryCapacity}";
 
         gatheringTimeText.gameObject.SetActive(data.gatheringTime.HasValue);
 

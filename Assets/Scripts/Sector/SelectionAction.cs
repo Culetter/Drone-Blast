@@ -1,5 +1,6 @@
 public enum SelectionAction
 {
     Discover,
-    Gather
+    Gather,
+    Cancel
 }

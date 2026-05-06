@@ -34,7 +34,7 @@ public class DiscoveringState : IDroneState
 
         if (timer > discoverTime)
         {
-            sector?.ChangeDiscoveredState();
+            sector?.ChangeDiscoveredState(drone);
             drone.SetState(new MovingState());
         }
     }

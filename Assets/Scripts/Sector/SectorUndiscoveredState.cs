@@ -4,10 +4,11 @@ using UnityEngine;
 public class SectorUndiscoveredState : ISectorState
 {
     public SectorStateType StateType => SectorStateType.Undiscovered;
+    public DroneController ResponsibleDrone { get; private set; }
     public DroneRole GetRequiredDroneRole() => DroneRole.Scout;
-    public void Enter(SectorController sector)
+    public void Enter(SectorController sector, DroneController drone)
     {
-
+        ResponsibleDrone = drone;
     }
 
     public void Exit()

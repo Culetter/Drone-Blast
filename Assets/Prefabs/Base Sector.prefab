@@ -58,6 +58,7 @@ GameObject:
   - component: {fileID: 3570188689059867573}
   - component: {fileID: 8268622716447853005}
   - component: {fileID: 1512310936567710293}
+  - component: {fileID: -121459013408551707}
   m_Layer: 0
   m_Name: Base Sector
   m_TagString: Base Sector
@@ -176,7 +177,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a18b2ec8b9d9b4aa442f13b82ae963, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  Storage: 0
+  storage: 0
+  autoMiningUpgrade: 0
 --- !u!114 &1512310936567710293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,6 +201,18 @@ MonoBehaviour:
   - {fileID: 6366241415230684988}
   - {fileID: 672675195913655173}
   - {fileID: 2524541926538789578}
+--- !u!114 &-121459013408551707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3573082955818545891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 384a65add850e9544a07ff536e8e009c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseSelectable
 --- !u!1 &4186584695094619653
 GameObject:
   m_ObjectHideFlags: 0

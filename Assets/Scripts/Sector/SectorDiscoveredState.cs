@@ -4,9 +4,12 @@ using UnityEngine;
 public class SectorDiscoveredState : ISectorState
 {
     public SectorStateType StateType => SectorStateType.Discovered;
-    public void Enter(SectorController sector)
+    private SectorController sector;
+    public DroneController ResponsibleDrone { get; private set; }
+    public void Enter(SectorController sector, DroneController drone)
     {
-
+        this.sector = sector;
+        ResponsibleDrone = drone;
     }
 
     public void Exit()
@@ -15,6 +18,9 @@ public class SectorDiscoveredState : ISectorState
     }
     public List<SelectionAction> GetAvailableActions()
     {
+        if (sector.BaseHasAutoMiningUpgrade())
+            return null;
+
         return new List<SelectionAction>()
         {
             SelectionAction.Gather

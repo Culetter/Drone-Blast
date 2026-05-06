@@ -1,5 +1,6 @@
 public enum SelectionType
 {
     Drone,
-    Sector
+    Sector,
+    BaseSector
 }

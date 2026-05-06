@@ -6,8 +6,10 @@ public class SelectionController : MonoBehaviour
 
     [SerializeField] DronePanelUI dronePanel;
     [SerializeField] SectorPanelUI sectorPanel;
+    [SerializeField] BasePanelUI basePanel;
 
     private ISelectable selected;
+    private SectorController currentSector;
 
     private void Awake()
     {
@@ -31,6 +33,11 @@ public class SelectionController : MonoBehaviour
 
         selected.OnSelect();
 
+        currentSector = selected.GetViewData() as SectorController;
+
+        if (currentSector != null)
+            currentSector.OnStateChanged += HandleSectorStateChanged;
+
         ShowPanel(selected);
 
         selectionUI.Show(
@@ -42,6 +49,7 @@ public class SelectionController : MonoBehaviour
     {
         sectorPanel.Hide();
         dronePanel.Hide();
+        basePanel.Hide();
 
         switch (selectable.GetSelectionType())
         {
@@ -51,6 +59,9 @@ public class SelectionController : MonoBehaviour
             case SelectionType.Drone:
                 dronePanel.Show((DroneController)selectable.GetViewData());
                 break;
+            case SelectionType.BaseSector:
+                basePanel.Show((BaseSectorController)selectable.GetViewData());
+                break;
         }
     }
     public void ClearSelection()
@@ -58,8 +69,15 @@ public class SelectionController : MonoBehaviour
         if (selected != null)
             selected.OnDeselect();
 
+        if (currentSector != null)
+            currentSector.OnStateChanged -= HandleSectorStateChanged;
+
+
+        currentSector = null;
         selected = null;
 
+        basePanel.Hide();
+        dronePanel.Hide();
         sectorPanel.Hide();
         selectionUI.Hide();
     }
@@ -72,6 +90,19 @@ public class SelectionController : MonoBehaviour
         bool success = selected.PerformAction(action);
 
         if (success)
-            selectionUI.Hide();
+            UpdateButtons();
+    }
+    private void HandleSectorStateChanged(SectorController sector)
+    {
+        UpdateButtons();
+    }
+    private void UpdateButtons()
+    {
+        selectionUI.Hide();
+
+        selectionUI.Show(
+            selected.GetTransform(),
+            selected.GetActions()
+        );
     }
 }

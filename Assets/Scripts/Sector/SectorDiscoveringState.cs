@@ -4,32 +4,29 @@ using UnityEngine;
 public class SectorDiscoveringState : ISectorState
 {
     public SectorStateType StateType => SectorStateType.Discovering;
-    public void Enter(SectorController sector)
+    public DroneController ResponsibleDrone {  get; private set; }
+    public void Enter(SectorController sector, DroneController drone)
     {
-
+        ResponsibleDrone = drone;
     }
 
     public void Exit()
     {
 
     }
-    public bool CanDiscover(DroneController drone)
-    {
-        return false;
-    }
-
-    public bool CanGather(DroneController drone)
-    {
-        return false;
-    }
     public List<SelectionAction> GetAvailableActions()
     {
-        return null;
+        return new List<SelectionAction>()
+        {
+            SelectionAction.Cancel
+        };
     }
     public DroneRole GetRequiredDroneRole(SelectionAction action)
     {
         switch (action)
         {
+            case SelectionAction.Cancel:
+                return DroneRole.None;
             default:
                 throw new System.Exception($"Action {action} not supported in {StateType}");
         }
@@ -38,6 +35,8 @@ public class SectorDiscoveringState : ISectorState
     {
         switch (action)
         {
+            case SelectionAction.Cancel:
+                return drone != null;
             default:
                 return false;
         }

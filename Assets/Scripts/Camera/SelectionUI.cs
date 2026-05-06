@@ -8,6 +8,7 @@ public class SelectionUI : MonoBehaviour
 
     [SerializeField] Button discoverButton;
     [SerializeField] Button collectButton;
+    [SerializeField] Button cancelButton;
 
     private readonly Dictionary<SelectionAction, Button> actionButtons = new();
 
@@ -26,6 +27,7 @@ public class SelectionUI : MonoBehaviour
 
         actionButtons[SelectionAction.Discover] = discoverButton;
         actionButtons[SelectionAction.Gather] = collectButton;
+        actionButtons[SelectionAction.Cancel] = cancelButton;
 
         Hide();
     }
@@ -88,5 +90,9 @@ public class SelectionUI : MonoBehaviour
     public void OnGatherClicked()
     {
         OnActionClicked?.Invoke(SelectionAction.Gather);
+    }
+    public void OnCancelClicked()
+    {
+        OnActionClicked?.Invoke(SelectionAction.Cancel);
     }
 }

@@ -9,7 +9,7 @@ public class IsometricCameraZoom : MonoBehaviour
     [SerializeField] float minZoom = 2;
     [SerializeField] float maxZoom = 40;
 
-    private float _currentZoom;
+    [SerializeField] float currentZoom = 40;
 
     private Camera _camera;
 
@@ -21,7 +21,7 @@ public class IsometricCameraZoom : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _currentZoom = Mathf.Clamp(_currentZoom - Input.mouseScrollDelta.y * zoomSpeed * Time.deltaTime, minZoom, maxZoom);
-        _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, _currentZoom, zoomSmoothness * Time.deltaTime);
+        currentZoom = Mathf.Clamp(currentZoom - Input.mouseScrollDelta.y * zoomSpeed * Time.deltaTime, minZoom, maxZoom);
+        _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, currentZoom, zoomSmoothness * Time.deltaTime);
     }   
 }
